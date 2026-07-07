@@ -1,0 +1,2 @@
+DROP TABLE IF EXISTS icons.lookups;
+DROP SCHEMA IF EXISTS icons;

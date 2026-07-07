@@ -1,0 +1,2 @@
+basic_auth_users:
+  admin: '$2a$13$a3nb11SxUXrAF7wMm.QSPuRrb.GqQJKoudxBVU9nsrA3uoskMnxPu'

@@ -1,0 +1,17 @@
+[package]
+name = "iconator"
+authors.workspace = true
+edition.workspace = true
+homepage.workspace = true
+keywords.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+version.workspace = true
+
+[dependencies]
+fst = "0.4.7"
+lazy_static = "1.5.0"
+
+[build-dependencies]
+fst = "0.4.7"

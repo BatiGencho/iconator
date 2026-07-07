@@ -1,0 +1,52 @@
+[package]
+name = "icon-api"
+authors.workspace = true
+edition.workspace = true
+homepage.workspace = true
+keywords.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+version.workspace = true
+
+[dependencies]
+anyhow = { workspace = true }
+async-trait = { workspace = true }
+axum = { workspace = true }
+bytes = "1.10.1"
+chrono = { workspace = true }
+deadpool-redis = { workspace = true, features = ["script"] }
+diesel = { workspace = true }
+diesel-async = { workspace = true }
+diesel_migrations = { workspace = true }
+dotenv = { workspace = true }
+envy = "0.4.2"
+iconator = { workspace = true }
+mime = "0.3.17"
+postgres = { workspace = true }
+prometheus = { version = "0.14", features = ["process"] }
+redis = { workspace = true }
+sentry = { version = "0.37.0" }
+serde = { workspace = true }
+serde_json = { workspace = true }
+serde_path_to_error = "0.1.17"
+telemetry = { workspace = true }
+thiserror = { workspace = true }
+tokio = { workspace = true }
+tower-http = { version = "0.6.1", features = [
+  "trace",
+  "compression-full",
+  "cors",
+  "catch-panic",
+] }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+types = { workspace = true }
+utoipa = { workspace = true, features = ["axum_extras"] }
+utoipa-swagger-ui = { version = "9.0", features = ["axum"] }
+uuid = { workspace = true }
+validator = { workspace = true }
+
+[dev-dependencies]
+mockall = "0.11"
+serde_path_to_error = "0.1.17"

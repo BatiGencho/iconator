@@ -1,0 +1,176 @@
+{
+  "info": {
+    "name": "Icon Lookup API",
+    "description": "REST API for resolving file and folder icons, served from Postgres (with a Redis cache) or from in-memory maps.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:50051"
+    },
+    {
+      "key": "api_prefix",
+      "value": "/api/icons/v1"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": ["{{base_url}}"],
+              "path": ["health"]
+            },
+            "description": "Per-component health (Postgres rw/ro, Redis). Returns 503 if a critical component is unhealthy."
+          }
+        },
+        {
+          "name": "Version",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/version",
+              "host": ["{{base_url}}"],
+              "path": ["version"]
+            }
+          }
+        },
+        {
+          "name": "Metrics (Prometheus)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/metrics",
+              "host": ["{{base_url}}"],
+              "path": ["metrics"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Icons - Database + Redis",
+      "item": [
+        {
+          "name": "File Icon (.rs ->525)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/icons/file?path=./src/main.rs",
+              "host": ["{{base_url}}{{api_prefix}}"],
+              "path": ["icons", "file"],
+              "query": [{ "key": "path", "value": "./src/main.rs" }]
+            },
+            "description": "Resolve a file icon. Matches on exact file name first, then extension. Cached in Redis; each lookup is recorded in the query history."
+          }
+        },
+        {
+          "name": "File Icon by exact name (.babelrc ->40)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/icons/file?path=./.babelrc",
+              "host": ["{{base_url}}{{api_prefix}}"],
+              "path": ["icons", "file"],
+              "query": [{ "key": "path", "value": "./.babelrc" }]
+            },
+            "description": "Exact file-name match takes precedence over extension."
+          }
+        },
+        {
+          "name": "File Icon - not found",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/icons/file?path=some-unknown-binary",
+              "host": ["{{base_url}}{{api_prefix}}"],
+              "path": ["icons", "file"],
+              "query": [{ "key": "path", "value": "some-unknown-binary" }]
+            },
+            "description": "No match returns 200 with iconId: null and found: false (not a 404)."
+          }
+        },
+        {
+          "name": "Folder Icon (.github ->862)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/icons/folder?path=./.github",
+              "host": ["{{base_url}}{{api_prefix}}"],
+              "path": ["icons", "folder"],
+              "query": [{ "key": "path", "value": "./.github" }]
+            },
+            "description": "Resolve a folder icon by exact folder name."
+          }
+        },
+        {
+          "name": "Bad Request (empty path)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/icons/file?path=",
+              "host": ["{{base_url}}{{api_prefix}}"],
+              "path": ["icons", "file"],
+              "query": [{ "key": "path", "value": "" }]
+            },
+            "description": "An empty path returns 400 with a structured error body."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Icons - In-Memory (iconator)",
+      "item": [
+        {
+          "name": "File Icon (test.ts ->633)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/icons/memory/file?path=test.ts",
+              "host": ["{{base_url}}{{api_prefix}}"],
+              "path": ["icons", "memory", "file"],
+              "query": [{ "key": "path", "value": "test.ts" }]
+            },
+            "description": "Resolve a file icon from the in-memory fst maps (no Postgres/Redis). Works even in degraded mode."
+          }
+        },
+        {
+          "name": "Folder Icon (src ->1054)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/icons/memory/folder?path=./project/src",
+              "host": ["{{base_url}}{{api_prefix}}"],
+              "path": ["icons", "memory", "folder"],
+              "query": [{ "key": "path", "value": "./project/src" }]
+            },
+            "description": "Resolve a folder icon from the in-memory fst maps."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Icons - History",
+      "item": [
+        {
+          "name": "Query History",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}{{api_prefix}}/icons/history",
+              "host": ["{{base_url}}{{api_prefix}}"],
+              "path": ["icons", "history"]
+            },
+            "description": "Returns the last 10 DB-backed icon lookups, most recent first. In-memory lookups are not recorded."
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+[registries.crates-io]
+protocol = "sparse"
+
+[profile.profiling]
+debug = 1
+inherits = "release"
+
+[profile.ci]
+codegen-units = 32
+debug = 0
+debug-assertions = true
+incremental = true
+inherits = "dev"
+lto = false
+opt-level = 0
+overflow-checks = true
+panic = 'unwind'
+rpath = false
+retries = { backoff = "exponential", count = 2, delay = "2s", jitter = true }
+slow-timeout = { period = "2m", terminate-after = 2 }
+test-threads = "num-cpus"
+
+[net]
+git-fetch-with-cli = true
+
+[env]
+RUST_MIN_STACK = "4388608" # 4MB
+
+[profile.default]
+retries = { backoff = "exponential", count = 2, delay = "2s", jitter = true }
+slow-timeout = { period = "1m", terminate-after = 2 }
+test-threads = "num-cpus"

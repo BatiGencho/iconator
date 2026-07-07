@@ -1,0 +1,6 @@
+# Following this documentation: https://github.com/rhysd/actionlint/blob/main/docs/config.md
+self-hosted-runner:
+  labels:
+    - "self-hosted"
+    - "Linux"
+    - "X64"
