@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cargo build *)",
+      "Bash(cargo clippy *)",
+      "Bash(cargo test *)",
+      "Bash(chmod +x scripts/*)",
+      "Bash(curl:*)",
+      "Bash(docker compose *)",
+      "Bash(docker ps:*)",
+      "Bash(docker rm:*)",
+      "Bash(git mv *)",
+      "Bash(grep:*)",
+      "Bash(lsof:*)",
+      "Bash(pkill -9 -f \"target/debug/icon-api\")",
+      "Bash(ps:*)",
+      "Bash(python3 scripts/gen_icon_seed.py *)",
+      "Bash(tilt up:*)",
+      "Bash(python3 -c \"import json;json.load\\(open\\('.claude/settings.local.json'\\)\\);print\\('valid JSON'\\)\")"
+    ]
+  }
+}

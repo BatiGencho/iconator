@@ -1,0 +1,35 @@
+{
+  "name": "mainmatter-task",
+  "version": "0.0.0",
+  "license": "MIT",
+  "author": "Evgeni Pirianov",
+  "private": true,
+  "packageManager": "bun@1.2.2",
+  "engines": {
+    "bun": ">=1.2.2"
+  },
+  "type": "module",
+  "scripts": {
+    "prettier:fix": "prettier --write \"**/*.@(json|ts)\" \"!**/node_modules/**\" \"!**/target/**\"",
+    "prettier:validate": "prettier --check \"**/*.@(json|ts)\" \"!**/node_modules/**\" \"!**/target/**\"",
+    "md:lint": "markdownlint -c .markdownlint.json **/*.md -d -i target -i node_modules -i CHANGELOG.md",
+    "md:fix": "bun run md:lint --fix",
+    "update:deps": "updates -uG",
+    "prepare": "husky"
+  },
+  "trustedDependencies": [
+    "markdownlint-cli"
+  ],
+  "devDependencies": {
+    "@commitlint/config-conventional": "20.0.0",
+    "commitlint": "20.1.0",
+    "markdownlint": "0.39.0",
+    "markdownlint-cli": "0.45.0",
+    "prettier": "^3.6.0",
+    "prettier-plugin-sh": "0.18.0",
+    "updates": "16.4.1",
+    "prettier-plugin-solidity": "2.1.0",
+    "lint-staged": "16.2.3",
+    "husky": "9.1.7"
+  }
+}

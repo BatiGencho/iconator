@@ -1,0 +1,16 @@
+[package]
+name = "types"
+authors.workspace = true
+edition.workspace = true
+homepage.workspace = true
+keywords.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+version.workspace = true
+
+[dependencies]
+chrono = { workspace = true }
+serde = { workspace = true }
+utoipa = { workspace = true }
+uuid = { workspace = true }

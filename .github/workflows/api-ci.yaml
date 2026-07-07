@@ -1,0 +1,84 @@
+name: Continuous Integration for API Server
+
+on:
+  workflow_call:
+    inputs: {}
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "services/api/server/**"
+      - ".github/workflows/api-ci.yaml"
+  push:
+    branches:
+      - main
+    paths:
+      - "services/api/server/**"
+      - ".github/workflows/api-ci.yaml"
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            pkg-config \
+            libssl-dev \
+            protobuf-compiler \
+            clang \
+            lld \
+            ca-certificates \
+            make \
+            autoconf \
+            automake \
+            libtool \
+            zlib1g-dev
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.92
+          components: rustfmt, clippy
+
+      - name: Install cargo-chef
+        run: cargo install cargo-chef --locked
+
+      - name: Cache cargo-chef dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: cargo-chef-${{ runner.os }}-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            cargo-chef-${{ runner.os }}-
+
+      - name: Prepare cargo-chef recipe
+        run: cargo chef prepare --recipe-path recipe.json
+
+      - name: Build dependencies with cargo-chef
+        run: cargo chef cook --release --recipe-path recipe.json
+
+      - name: Format code after chef build
+        run: cargo fmt --manifest-path services/api/server/Cargo.toml --all
+
+      - name: Check code formatting
+        run: cargo fmt --manifest-path services/api/server/Cargo.toml --all -- --check
+
+      - name: Build project
+        run: cargo build --manifest-path services/api/server/Cargo.toml
+
+      - name: Check project
+        run: cargo check --manifest-path services/api/server/Cargo.toml
+
+      - name: Run clippy
+        run: cargo clippy --manifest-path services/api/server/Cargo.toml -j 16
+
+      - name: Run tests
+        run: cargo test --manifest-path services/api/server/Cargo.toml

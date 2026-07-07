@@ -1,0 +1,11 @@
+apiVersion: 1
+datasources:
+  - name: Icon Metrics
+    type: prometheus
+    url: http://prometheus:9090
+    isDefault: true
+    editable: true
+    basicAuth: true
+    basicAuthUser: ${MONITORING_USER}
+    secureJsonData:
+      basicAuthPassword: ${MONITORING_PASSWORD}
